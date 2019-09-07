@@ -11,8 +11,8 @@ public class EmployeeIdGenerator implements IdentifierGenerator {
 
 	@Override
 	public Serializable generate(SharedSessionContractImplementor arg0, Object arg1) throws HibernateException {
-		Random random = new Random(100000);
-		return "U" + random.nextInt();
+		Random random = new Random();
+		return "U" + random.nextInt(100000);
 	}
 
 }

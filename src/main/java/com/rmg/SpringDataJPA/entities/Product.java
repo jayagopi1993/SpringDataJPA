@@ -20,6 +20,10 @@ public class Product {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;*/
 	
+	
+	/**
+	 * create table product_gen(gen_name varchar(256) primary key,gen_value integer); before using this.
+	 */
 	@TableGenerator(name="product",table="product_gen",pkColumnName="gen_name",allocationSize=1)
 	@Id
 	@GeneratedValue(strategy = GenerationType.TABLE,generator="product")

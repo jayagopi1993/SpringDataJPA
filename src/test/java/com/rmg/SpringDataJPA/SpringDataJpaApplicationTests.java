@@ -1,7 +1,5 @@
 package com.rmg.SpringDataJPA;
 
-import java.util.stream.Collectors;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,24 +25,58 @@ public class SpringDataJpaApplicationTests {
 	public void contextLoads() {
 	}
 
+	/**
+	 * TOPIC : Generators
+	 * Save product on Database with Auto generated ID - different types  like AUTO,SEQUENCE,TABLE,IDENTITY
+	 * Reference docs - https://docs.spring.io/spring-data/jpa/docs/current/reference/html/
+	 */
 	@Test
 	public void saveData() {
 		Product product = new Product();
 		product.setName("Laptop");
 		productRepo.save(product);
 	}
-	
+
+	/**
+	 * TOPIC : Generators
+	 * Save different Employees on Database using generation type - CUSTOM ID generation
+	 * Reference docs - https://docs.spring.io/spring-data/jpa/docs/current/reference/html/
+	 */
 	@Test
 	public void saveEmpData() {
 		Employee employee = new Employee();
-		employee.setName("Gopinath");
+		employee.setName("Jhon");
+		employee.setSalary(35000d);
+
+		Employee employee1 = new Employee();
+		employee1.setName("Arun");
+		employee1.setSalary(13000d);
+
+		Employee employee2 = new Employee();
+		employee2.setName("Kevin");
+		employee2.setSalary(25000d);
+
 		employeeRepo.save(employee);
+		employeeRepo.save(employee1);
+		employeeRepo.save(employee2);
 	}
-	
+
+	/**
+	 *  TOPIC : Finder Methods 
+	 *  To Fetch All Employee based on different conditions
+	 *  Reference docs - https://docs.spring.io/spring-data/jpa/docs/current/reference/html/
+	 */
 	@Test
-	public void loadData() {
-		productRepo.findAll().stream().collect(Collectors.toList());
-		
+	public void fetchEmployee() {
+		employeeRepo.findAll().forEach(employee -> System.out.println(employee.toString()));
+		employeeRepo.findByName("Jhon")
+				.forEach(employee -> System.out.println("findByName(\"Jhon\")>>" + employee.toString()));
+		employeeRepo.findByNameAndSalary("Arun", 13000d).forEach(
+				employee -> System.out.println("findByNameAndSalary(\"Arun\", 13000d)>>" + employee.toString()));
+		employeeRepo.findByNameStartingWith("K")
+				.forEach(employee -> System.out.println("findByNameStartingWith(\"K\")>>" + employee.toString()));
+		employeeRepo.findBySalaryGreaterThanEqual(20000d).forEach(
+				employee -> System.out.println("findBySalaryGreaterThanEqual(20000d)>>" + employee.toString()));
 	}
 
 }

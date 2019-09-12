@@ -4,6 +4,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.rmg.SpringDataJPA.entities.Employee;
@@ -34,7 +37,31 @@ public class SpringDataJpaApplicationTests {
 	public void saveData() {
 		Product product = new Product();
 		product.setName("Laptop");
+		
+		/**
+		 * Added some product for demo of Paging & Sorting
+		 */
+		Product product1 = new Product();
+		product1.setName("Charger");
+		
+		Product product2 = new Product();
+		product2.setName("PC");
+		
+		Product product3 = new Product();
+		product3.setName("IMac");
+		
+		Product product4 = new Product();
+		product4.setName("Apple IPad");
+		
+		Product product5 = new Product();
+		product5.setName("Note 7 Pro");
+		
 		productRepo.save(product);
+		productRepo.save(product1);
+		productRepo.save(product2);
+		productRepo.save(product3);
+		productRepo.save(product4);
+		productRepo.save(product5);
 	}
 
 	/**
@@ -79,4 +106,48 @@ public class SpringDataJpaApplicationTests {
 				employee -> System.out.println("findBySalaryGreaterThanEqual(20000d)>>" + employee.toString()));
 	}
 
+	/**
+	 * Finding product by pages default methods of PagingAndSortingRepository Interface - PageRequest.of(pageNumber, NumOfItemPerPage) 
+	 * productRepo.findAll(Pageable pageable);
+	 */
+	@Test
+	public void fetchWithPaging() {
+		System.out.println("Fetch on page 1 : PageRequest.of(0, 2)");
+		productRepo.findAll(PageRequest.of(0, 2)).forEach(product->System.out.println(product.toString()));
+		System.out.println("Fetch on page 1 : PageRequest.of(1, 2)");
+		productRepo.findAll(PageRequest.of(1, 2)).forEach(product->System.out.println(product.toString()));
+		System.out.println("Fetch on page 1 : PageRequest.of(2, 2)");
+		productRepo.findAll(PageRequest.of(2, 2)).forEach(product->System.out.println(product.toString()));
+		
+		/**
+		 * Custom Paging by passing pageRequest object to finder method.
+		 */
+		employeeRepo.findBySalaryGreaterThanEqual(20000d,PageRequest.of(0, 1)).forEach(
+				employee -> System.out.println("Custom Page request" + employee.toString()));
+	}
+	
+	/**
+	 * Finding the product with the sorted order by default methods of PagingAndSortingRepository Interface - Sort.by(order, sortingField)
+	 * productRepo.findAll(Sort.by(Direction.ASC, "name"))
+	 */
+	@Test
+	public void fetchWithSorting() {
+		System.out.println("Product object : Sorting by name field");
+		productRepo.findAll(Sort.by(Direction.ASC, "name")).forEach(product->System.out.println(product.toString()));
+		
+		/**
+		 * Custom Sorting by passing Sort object to finder method
+		 */
+		System.out.println("Employee Object : Sorting by salary DESC");
+		employeeRepo.findBySalaryGreaterThanEqual(20000d,Sort.by(Direction.DESC,"salary")).forEach(
+				employee -> System.out.println(employee.toString()));
+		
+		/**
+		 * Also possible both Paging and sorting on single method
+		 */
+		System.out.println("Employee Object : Paging & Sorting by salary DESC");
+		employeeRepo.findBySalaryGreaterThanEqual(20000d,PageRequest.of(0, 1, Sort.by(Direction.DESC,"salary"))).forEach(
+				employee -> System.out.println(employee.toString()));
+	}
+	
 }
